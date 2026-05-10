@@ -21,13 +21,39 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
-        run: pip install requests
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}-v1
+
+      - name: Install Python dependencies
+        run: pip install playwright requests python-dotenv
+
+      - name: Install Playwright browser (only if not cached)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: playwright install chromium --with-deps
+
+      - name: Install Playwright system deps (always)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: playwright install-deps chromium
 
       - name: Check seat availability
         env:
-          SHOHOZ_EMAIL: ${{ secrets.SHOHOZ_EMAIL }}
+          SHOHOZ_PHONE: ${{ secrets.SHOHOZ_PHONE }}
           SHOHOZ_PASSWORD: ${{ secrets.SHOHOZ_PASSWORD }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python check_seat.py
+
+      - name: Upload screenshots (debug)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: |
+            login_page.png
+            after_login.png
+            search_page.png
+          if-no-files-found: ignore
