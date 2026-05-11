@@ -41,19 +41,6 @@ jobs:
 
       - name: Check seat availability
         env:
-          SHOHOZ_PHONE: ${{ secrets.SHOHOZ_PHONE }}
-          SHOHOZ_PASSWORD: ${{ secrets.SHOHOZ_PASSWORD }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python check_seat.py
-
-      - name: Upload screenshots (debug)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots
-          path: |
-            login_page.png
-            after_login.png
-            search_page.png
-          if-no-files-found: ignore
