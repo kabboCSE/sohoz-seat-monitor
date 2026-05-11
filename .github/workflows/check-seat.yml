@@ -2,7 +2,7 @@ name: Shohoz Seat Monitor
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/2 * * * *'
   workflow_dispatch:
 
 env:
