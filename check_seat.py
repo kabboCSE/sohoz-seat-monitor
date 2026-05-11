@@ -11,7 +11,7 @@ TARGET_OPERATOR = "S.R Travels"
 
 async def check_seats():
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False, slow_mo=500)
+        browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
 
         print("Loading Shohoz search page...")
